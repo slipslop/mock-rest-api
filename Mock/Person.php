@@ -59,6 +59,26 @@ class Mock_Person{
 
     }
 
+    public static function getAll() : ?array {
+
+        $result = [];
+
+        $personsCount = 4;
+
+        for( $i = 0; $i < $personsCount; $i++ ) {
+            
+        }
+        
+        $personA = new static( ['name' => 'foo bar', 'email' => 'foo@bar.com'] );
+        $personB = new static( ['name' => 'foo bar2', 'email' => 'foo2@bar.com'] );
+
+        $result[] = $personA;
+        $result[] = $personB;
+
+        return $result;
+
+    }
+
 }
 
 ?>
