@@ -1,4 +1,6 @@
 <?php
+header('Content-type: application/json');
+
 http_response_code(200);
 
 $date = new DateTime();
