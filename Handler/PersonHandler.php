@@ -16,7 +16,11 @@ class PersonHandler {
         switch( $this->requestMethod ) {
 
             case 'GET':
-                $response = Mock_Person::getAll();
+                if( $this->id ) {
+                    $response = Mock_Person::getOne($this->id);
+                } else {
+                    $response = Mock_Person::getAll();
+                }
                 break;
             
             case 'POST':
@@ -37,9 +41,9 @@ class PersonHandler {
 
         $person = new Mock_Person( $data );
 
-        $error = $person->validate();
+        $person->validate();
 
-        if( $error ) {
+        if( isset($person->error) ) {
             http_response_code(400);
             return [
                 'message'   => 'Failed to create person',
@@ -58,7 +62,7 @@ class PersonHandler {
 
     public function updatePerson() {
 
-        
+
 
     }
 

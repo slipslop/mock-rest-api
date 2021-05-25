@@ -1,0 +1,32 @@
+[
+    {
+        "id": "60acb4b2312d2",
+        "name": "foo bar",
+        "email": "foo@bar.com",
+        "created": "2021-05-25 08:26:26"
+    },
+    {
+        "id": "60acb4b2312dd",
+        "name": "foo bar2",
+        "email": "foo2@bar.com",
+        "created": "2021-05-25 08:26:25"
+    },
+    {
+        "id": "60acb4b2312da",
+        "name": "foo bar3",
+        "email": "foo3@bar.com",
+        "created": "2021-05-25 08:26:29"
+    },
+    {
+        "id": "60acb4b2312db",
+        "name": "foo bar4",
+        "email": "foo4@bar.com",
+        "created": "2021-05-25 08:26:28"
+    },
+    {
+        "id": "60acb4b2312dc",
+        "name": "foo bar5",
+        "email": "foo5@bar.com",
+        "created": "2021-05-25 08:26:27"
+    }
+]

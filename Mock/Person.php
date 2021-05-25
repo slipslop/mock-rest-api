@@ -45,37 +45,43 @@ class Mock_Person{
            
             if( !method_exists($this, $method) ) {
                 $this->error = "No getter for {$method} ";
-                return true;
+                return false;
             }
            
             if( !$this->$method() ) {
                 $this->error = $field;
-                return true;
+                return false;
             }
 
         }
 
-        return false;
+        return true;
 
     }
 
     public static function getAll() : ?array {
-
-        $result = [];
-
-        $personsCount = 4;
-
-        for( $i = 0; $i < $personsCount; $i++ ) {
-            
-        }
         
-        $personA = new static( ['name' => 'foo bar', 'email' => 'foo@bar.com'] );
-        $personB = new static( ['name' => 'foo bar2', 'email' => 'foo2@bar.com'] );
+        $string = file_get_contents("../Data/person.json");
+        
+        $json_a = json_decode($string, true);
 
-        $result[] = $personA;
-        $result[] = $personB;
+        return $json_a;
 
-        return $result;
+    }
+
+    public static function getOne(string $givenId) {
+
+        $string = file_get_contents("../Data/person.json");
+        
+        $json_a = json_decode($string, true);
+
+        foreach( $json_a as $k => $value ) {
+            if( $value['id'] == $givenId ) {
+                return $value;
+            }
+        }
+      
+        return false;
 
     }
 
