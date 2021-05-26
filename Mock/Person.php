@@ -5,10 +5,10 @@ class Mock_Person{
     private $requiredFields = ['name', 'email'];
 
     function __construct( array $attr ){
-        $this->id = uniqid();
+        $this->id = isset($attr['id']) ? $attr['id'] : uniqid();
         $this->name = $attr['name'];
         $this->email = $attr['email'];
-        $this->created = date('Y-m-d H:i:s');
+        $this->created = isset($attr['created']) ? $attr['created'] : date('Y-m-d H:i:s');
     }
 
     public function getName() : ?string {
@@ -69,18 +69,42 @@ class Mock_Person{
 
     }
 
-    public static function getOne(string $givenId) {
+    public static function getOne(string $givenId) : ?Mock_Person {
+
+        $person = static::getCorrectPersonFromPersonsCollection($givenId);
+
+        if( !$person ) {
+            return false;
+        }
+
+        return new static($person);
+        
+    }
+
+    public function updateData(array $data) : Mock_Person {
+
+        foreach($data as $k => $v) {
+            $this->$k = $v;
+        }
+
+        return $this;
+
+    }
+
+    private static function getCorrectPersonFromPersonsCollection(string $givenId) : ?array {
 
         $string = file_get_contents("../Data/person.json");
         
-        $json_a = json_decode($string, true);
+        $personsAsArray = json_decode($string, true);
 
-        foreach( $json_a as $k => $value ) {
-            if( $value['id'] == $givenId ) {
-                return $value;
+        foreach( $personsAsArray as $person ) {
+
+            if( $person['id'] == $givenId ) {
+                return $person;
             }
+            
         }
-      
+
         return false;
 
     }

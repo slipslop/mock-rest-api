@@ -1,8 +1,9 @@
 <?php
 
 require_once('../Mock/Person.php');
+require_once('../Handler.php');
 
-class PersonHandler {
+class PersonHandler implements Handler {
 
     function __construct(string $requestMethod, ?string $id){
         
@@ -22,13 +23,17 @@ class PersonHandler {
                     $response = Mock_Person::getAll();
                 }
                 break;
-            
+
             case 'POST':
                 $response = $this->createNewPerson($_POST);
                 break;
 
             case 'PUT':
                 $response = $this->updatePerson();
+                break;
+            
+            default:
+                $response = ['msg' => 'Not implemented'];
                 break;
 
         }
@@ -62,7 +67,17 @@ class PersonHandler {
 
     public function updatePerson() {
 
+        $person = Mock_Person::getOne($this->id);
 
+        if( !$person ) {
+            return [
+                'message'   => 'Person not found',
+            ];
+        }
+
+        $putParams = (array) json_decode( file_get_contents('php://input') );
+
+        return $person->updateData($putParams);
 
     }
 
