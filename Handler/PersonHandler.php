@@ -44,8 +44,8 @@ class PersonHandler implements Handler {
 
     public function createNewPerson(array $data){
 
-        $person = new Mock_Person( $data );
-
+        $person = new Mock_Person();
+        $person->set( $data );
         $person->validate();
 
         if( isset($person->error) ) {
@@ -61,6 +61,7 @@ class PersonHandler implements Handler {
             'message'   => 'Successfully created a new person',
             'id'        => $person->id,
             'timestamp' => time(),
+            'person'    => $person,
         ];
 
     }
@@ -77,7 +78,17 @@ class PersonHandler implements Handler {
 
         $putParams = (array) json_decode( file_get_contents('php://input') );
 
-        return $person->updateData($putParams);
+        $person = $person->updateData($putParams);
+
+        if( isset($person->error) ) {
+            http_response_code(400);
+            return [
+                'message'   => 'Failed to create person',
+                'missing'   => $person->error
+            ];
+        }
+
+        return $person;
 
     }
 

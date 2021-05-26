@@ -2,59 +2,73 @@
 
 class Mock_Person{
     
-    private $requiredFields = ['name', 'email'];
+    public static $fields = [
+        'id'    => [
+            'required'  => true,
+            'type'  => 'string',
+        ],
+        'name' => [
+            'required'  => true,
+            'type'  => 'string',
+        ],
+        'email' => [
+            'required'  => true,
+            'type'  => 'string',
+        ], 
+        'created' => [
+            'required'  => true,
+            'type'  => 'string',
+        ], 
+        'updated'   => [
+            'required'  => false,
+            'type'  => 'datetime',
+        ]
+    ];
 
-    function __construct( array $attr ){
-        $this->id = isset($attr['id']) ? $attr['id'] : uniqid();
-        $this->name = $attr['name'];
-        $this->email = $attr['email'];
-        $this->created = isset($attr['created']) ? $attr['created'] : date('Y-m-d H:i:s');
-    }
+    public function set( array $data ) {
+      
+        $fields = self::$fields;
 
-    public function getName() : ?string {
-        return $this->name;
-    }
+        foreach( $data as $k => $v) {
 
-    public function setName( string $name ){
-        $this->name = $name;
-    }
+            if( !isset($fields[$k]) ) {
+                $this->error = "Illegal field {$k}";
+                return false;
+            }
 
-    public function getEmail() : ?string {
-        return $this->email;
-    }
+            $this->$k = $v;
+        
+        }
 
-    public function setEmail( string $email ){
-        $this->email = $email;
-    }
-
-    public function getCreated() : DateTime {
-        return new Datetime( $this->created );
-    }
-
-    public function setCreated( $date ){
-        $this->created = $date;
+        if( !isset($this->id) ) $this->id = uniqid();
+        if( !isset($this->created) ) $this->created = date('Y-m-d H:i:s');
+        
+        return $this;
+    
     }
 
     public function validate(){
 
-        foreach( $this->requiredFields as $field ) {
+        if( isset($this->error) ) return $this->error;
+
+        $fields = self::$fields;
+
+        foreach( $fields as $fieldName => $field ) {
             
-            $fieldUppercase = ucfirst($field);
-
-            $method = "get{$fieldUppercase}";
-           
-            if( !method_exists($this, $method) ) {
-                $this->error = "No getter for {$method} ";
-                return false;
-            }
-           
-            if( !$this->$method() ) {
-                $this->error = $field;
-                return false;
+            if( !isset($field['required']) ) {
+                continue;
             }
 
+            if( $field['required'] == true ) {
+                
+                if( !isset($this->$fieldName) ) {
+                    $this->error = $fieldName;
+                }
+
+            }
+            
         }
-
+     
         return true;
 
     }
@@ -69,7 +83,7 @@ class Mock_Person{
 
     }
 
-    public static function getOne(string $givenId) : ?Mock_Person {
+    public static function getOne(string $givenId) {
 
         $person = static::getCorrectPersonFromPersonsCollection($givenId);
 
@@ -77,21 +91,24 @@ class Mock_Person{
             return false;
         }
 
-        return new static($person);
+        $personObj = new Mock_Person();
+        $personObj->set($person);
+       
+        return $personObj;
         
     }
 
     public function updateData(array $data) : Mock_Person {
-
-        foreach($data as $k => $v) {
-            $this->$k = $v;
-        }
+       
+        $this->set($data);
+        $this->updated = date('Y-m-d H:i:s');
+        $this->validate();
 
         return $this;
 
     }
 
-    private static function getCorrectPersonFromPersonsCollection(string $givenId) : ?array {
+    private static function getCorrectPersonFromPersonsCollection(string $givenId) {
 
         $string = file_get_contents("../Data/person.json");
         
