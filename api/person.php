@@ -23,8 +23,11 @@ function getIdFromUriIfSet() : ?string {
     
     $id = null;
     
-    if( isset($uriParts[3]) ) {
-        $id = $uriParts[3];
+    // if( isset($uriParts[3]) ) {
+    //     $id = $uriParts[3];
+    // }
+    if( isset($uriParts[7]) ) {
+        $id = $uriParts[7];
     }
 
     return $id;

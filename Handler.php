@@ -1,6 +1,6 @@
 <?php
 
-interface Handler{
+interface Handler {
 
     function process();
 

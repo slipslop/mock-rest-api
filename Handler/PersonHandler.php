@@ -18,9 +18,9 @@ class PersonHandler implements Handler {
 
             case 'GET':
                 if( $this->id ) {
-                    $response = Mock_Person::getOne($this->id);
+                    $response = $this->getOnePerson();
                 } else {
-                    $response = Mock_Person::getAll();
+                    $response = $this->getAllPersons();
                 }
                 break;
 
@@ -42,7 +42,24 @@ class PersonHandler implements Handler {
 
     }
 
-    public function createNewPerson(array $data){
+    public function getOnePerson(){
+        
+        $person = Mock_Person::getOne($this->id);
+        
+        if( !$person ) {
+            return ['msg' => 'Person not found'];
+        } 
+
+        return ['person' => $person];
+        
+    }
+
+    public function getAllPersons(){
+        $persons = Mock_Person::getAll();
+        return ['persons' => $persons];
+    }
+
+    public function createNewPerson(Array $data){
 
         $person = new Mock_Person();
         $person->set( $data );
@@ -52,7 +69,7 @@ class PersonHandler implements Handler {
             http_response_code(400);
             return [
                 'message'   => 'Failed to create person',
-                'missing'   => $person->error
+                'reason'   => $person->error
             ];
         }
 
@@ -69,22 +86,22 @@ class PersonHandler implements Handler {
     public function updatePerson() {
 
         $person = Mock_Person::getOne($this->id);
-
+       
         if( !$person ) {
             return [
                 'message'   => 'Person not found',
             ];
         }
 
-        $putParams = (array) json_decode( file_get_contents('php://input') );
-
+        $putParams =  json_decode( file_get_contents('php://input') );
+        
         $person = $person->updateData($putParams);
 
         if( isset($person->error) ) {
             http_response_code(400);
             return [
                 'message'   => 'Failed to create person',
-                'missing'   => $person->error
+                'reason'   => $person->error
             ];
         }
 

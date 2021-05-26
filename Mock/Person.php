@@ -1,77 +1,31 @@
 <?php 
 
-class Mock_Person{
+require_once('../Resource.php');
+
+class Mock_Person extends Resource {
     
-    public static $fields = [
-        'id'    => [
+    protected $fields = [
+        'id'        => [
             'required'  => true,
-            'type'  => 'string',
+            'type'      => 'id',
         ],
-        'name' => [
+        'name'      => [
             'required'  => true,
-            'type'  => 'string',
+            'type'      => 'string',
         ],
-        'email' => [
+        'email'     => [
             'required'  => true,
-            'type'  => 'string',
+            'type'      => 'string',
         ], 
-        'created' => [
+        'created'   => [
             'required'  => true,
-            'type'  => 'string',
+            'type'      => 'datetime',
         ], 
         'updated'   => [
             'required'  => false,
-            'type'  => 'datetime',
-        ]
+            'type'      => 'datetime',
+        ],
     ];
-
-    public function set( array $data ) {
-      
-        $fields = self::$fields;
-
-        foreach( $data as $k => $v) {
-
-            if( !isset($fields[$k]) ) {
-                $this->error = "Illegal field {$k}";
-                return false;
-            }
-
-            $this->$k = $v;
-        
-        }
-
-        if( !isset($this->id) ) $this->id = uniqid();
-        if( !isset($this->created) ) $this->created = date('Y-m-d H:i:s');
-        
-        return $this;
-    
-    }
-
-    public function validate(){
-
-        if( isset($this->error) ) return $this->error;
-
-        $fields = self::$fields;
-
-        foreach( $fields as $fieldName => $field ) {
-            
-            if( !isset($field['required']) ) {
-                continue;
-            }
-
-            if( $field['required'] == true ) {
-                
-                if( !isset($this->$fieldName) ) {
-                    $this->error = $fieldName;
-                }
-
-            }
-            
-        }
-     
-        return true;
-
-    }
 
     public static function getAll() : ?array {
         
@@ -85,7 +39,7 @@ class Mock_Person{
 
     public static function getOne(string $givenId) {
 
-        $person = static::getCorrectPersonFromPersonsCollection($givenId);
+        $person = static::getPersonByIdFromPersonsCollection($givenId);
 
         if( !$person ) {
             return false;
@@ -99,7 +53,7 @@ class Mock_Person{
     }
 
     public function updateData(array $data) : Mock_Person {
-       
+        var_Dump($data);
         $this->set($data);
         $this->updated = date('Y-m-d H:i:s');
         $this->validate();
@@ -108,12 +62,14 @@ class Mock_Person{
 
     }
 
-    private static function getCorrectPersonFromPersonsCollection(string $givenId) {
+    private static function getPersonByIdFromPersonsCollection(string $givenId) {
 
-        $string = file_get_contents("../Data/person.json");
+        $collection = file_get_contents("../Data/person.json");
         
-        $personsAsArray = json_decode($string, true);
+        $assoc = true;
 
+        $personsAsArray = json_decode($collection, $assoc);
+        
         foreach( $personsAsArray as $person ) {
 
             if( $person['id'] == $givenId ) {
