@@ -1,5 +1,4 @@
 <?php
-
 class Resource {
 
     public function set( array $data ) {
@@ -30,16 +29,10 @@ class Resource {
         $fields = $this->fields;
 
         foreach( $fields as $fieldName => $field ) {
-            
-            if( !isset($field['required']) ) {
-                continue;
-            }
 
-            if( $field['required'] == true ) {
+            if( $this->fieldIsRequired($field) && !isset($this->$fieldName) ) {
                 
-                if( !isset($this->$fieldName) ) {
-                    $this->error = "Missing field '{$fieldName}'";
-                }
+                $this->error = "Missing field '{$fieldName}'";
 
             }
             
@@ -57,19 +50,23 @@ class Resource {
 
             if( $this->fieldIsRequired($field) && !isset($this->$fieldName) ) {
  
-                switch( $field['type'] ) {
-                    case 'id':
-                        $this->$fieldName = uniqid();
-                        break;
-                    case 'datetime':
-                        $this->$fieldName = date('Y-m-d H:i:s');
-                        break;
-                }
+                $this->setField($field, $fieldName);
 
             }
 
         }
 
+    }
+
+    private function setField($field, $fieldName) {
+        switch( $field['type'] ) {
+            case 'id':
+                $this->$fieldName = uniqid();
+                break;
+            case 'datetime':
+                $this->$fieldName = date('Y-m-d H:i:s');
+                break;
+        }
     }
 
     private function givenFieldIsIllegal($key){
