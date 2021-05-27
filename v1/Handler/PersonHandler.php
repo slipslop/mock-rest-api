@@ -1,7 +1,6 @@
 <?php
-
-require_once('../Mock/Person.php');
-require_once('../Handler.php');
+require_once('./Handler.php');
+require_once('./Mock/Person.php');
 
 class PersonHandler implements Handler {
 
@@ -25,7 +24,7 @@ class PersonHandler implements Handler {
                 break;
 
             case 'POST':
-                $response = $this->createNewPerson($_POST);
+                $response = $this->createNewPerson();
                 break;
 
             case 'PUT':
@@ -33,11 +32,11 @@ class PersonHandler implements Handler {
                 break;
             
             default:
-                $response = ['msg' => 'Not implemented'];
+                $response = $this->notImplementedResponse();
                 break;
 
         }
-
+      
         return json_encode( $response );
 
     }
@@ -47,7 +46,7 @@ class PersonHandler implements Handler {
         $person = Mock_Person::getOne($this->id);
         
         if( !$person ) {
-            return ['msg' => 'Person not found'];
+            return $this->personNotFoundResponse();
         } 
 
         return ['person' => $person];
@@ -59,25 +58,24 @@ class PersonHandler implements Handler {
         return ['persons' => $persons];
     }
 
-    public function createNewPerson(Array $data){
-
+    public function createNewPerson(){
+        $data = $this->readInputToArray();
+        
         $person = new Mock_Person();
         $person->set( $data );
         $person->validate();
-
+        
         if( isset($person->error) ) {
             http_response_code(400);
             return [
                 'message'   => 'Failed to create person',
-                'reason'   => $person->error
+                'reason'    => $person->error
             ];
         }
 
         http_response_code(201);
         return [
             'message'   => 'Successfully created a new person',
-            'id'        => $person->id,
-            'timestamp' => time(),
             'person'    => $person,
         ];
 
@@ -85,28 +83,60 @@ class PersonHandler implements Handler {
 
     public function updatePerson() {
 
+        if( !$this->id ) {
+            http_response_code(400);
+            return [
+                'message'  => 'Failed to update person',
+                'reason'   => 'Id is missing',
+            ];
+        }
+
         $person = Mock_Person::getOne($this->id);
        
         if( !$person ) {
+           return $this->personNotFoundResponse();
+        }
+
+        $putParams =  $this->readInputToArray();
+       
+        if( !$putParams ){
+            http_response_code(400);
             return [
-                'message'   => 'Person not found',
+                'message'   => 'Failed to update person',
+                'reason'    => 'Parameters are missing',
             ];
         }
 
-        $putParams =  json_decode( file_get_contents('php://input') );
-        
         $person = $person->updateData($putParams);
 
         if( isset($person->error) ) {
-            http_response_code(400);
+            http_response_code(422);
             return [
-                'message'   => 'Failed to create person',
-                'reason'   => $person->error
+                'message'   => 'Failed to update person',
+                'reason'    => $person->error
             ];
         }
 
-        return $person;
+        return ['person' => $person];
 
+    }
+
+    private function readInputToArray(){
+        return (Array) json_decode( file_get_contents('php://input') );
+    }
+
+    private function notImplementedResponse(){
+        http_response_code(405);
+        return [
+            'message'   => 'Method not allowed',
+        ];
+    }
+
+    private function personNotFoundResponse(){
+        http_response_code(404);
+        return [
+            'message'  => 'Person not found',
+        ];
     }
 
 }

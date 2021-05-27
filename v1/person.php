@@ -1,5 +1,6 @@
 <?php
-require_once('../Handler/PersonHandler.php');
+
+require_once('./Handler/PersonHandler.php');
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
@@ -23,12 +24,12 @@ function getIdFromUriIfSet() : ?string {
     
     $id = null;
     
-    // if( isset($uriParts[3]) ) {
-    //     $id = $uriParts[3];
-    // }
-    if( isset($uriParts[7]) ) {
-        $id = $uriParts[7];
+    if( isset($uriParts[3]) ) {
+        $id = $uriParts[3];
     }
+    // if( isset($uriParts[7]) ) {
+    //     $id = $uriParts[7];
+    // }
 
     return $id;
 

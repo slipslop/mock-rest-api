@@ -1,6 +1,6 @@
 <?php 
 
-require_once('../Resource.php');
+require_once('./Resource.php');
 
 class Mock_Person extends Resource {
     
@@ -29,7 +29,7 @@ class Mock_Person extends Resource {
 
     public static function getAll() : ?array {
         
-        $string = file_get_contents("../Data/person.json");
+        $string = file_get_contents("./Data/person.json");
         
         $json_a = json_decode($string, true);
 
@@ -53,7 +53,7 @@ class Mock_Person extends Resource {
     }
 
     public function updateData(array $data) : Mock_Person {
-        var_Dump($data);
+       
         $this->set($data);
         $this->updated = date('Y-m-d H:i:s');
         $this->validate();
@@ -64,7 +64,7 @@ class Mock_Person extends Resource {
 
     private static function getPersonByIdFromPersonsCollection(string $givenId) {
 
-        $collection = file_get_contents("../Data/person.json");
+        $collection = file_get_contents("./Data/person.json");
         
         $assoc = true;
 
