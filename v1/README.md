@@ -22,4 +22,4 @@ POST persons
 PUT persons/:id
 
 NOTE:
-You might need to change the code at person.php on line 27, in order to get the correct id.
+You might need to change the code at person.php on line 31 and 32, in order to get the correct id.

@@ -1,6 +1,9 @@
 <?php
 class Resource {
 
+    /**
+     * Set resource fields. If required field is missing, try to fill it with predefined data, such as id or datetime
+     */
     public function set( array $data ) {
 
         foreach( $data as $key => $value) {
@@ -22,6 +25,9 @@ class Resource {
 
     }
 
+    /**
+     * Check that no required fields are empty.
+     */
     public function validate(){
 
         if( isset($this->error) ) return $this->error;
