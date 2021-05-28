@@ -31,10 +31,7 @@ function getIdFromUriIfSet() : ?string {
     if( isset($uriParts[1]) ) {
         $id = $uriParts[1];
     }
-    // if( isset($uriParts[7]) ) {
-    //     $id = $uriParts[7];
-    // }
-
+    
     return $id;
 
 }
