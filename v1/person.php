@@ -15,6 +15,8 @@ $handler = new PersonHandler($method, $id);
 $response = $handler->process();
 
 echo( $response );
+$arr = (array) json_decode($response);
+
 
 function getIdFromUriIfSet() : ?string {
 
