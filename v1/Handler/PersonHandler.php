@@ -59,8 +59,13 @@ class PersonHandler implements Handler {
     }
 
     public function createNewPerson(){
+
+        if( $this->id ) {
+            http_response_code(405);
+            return;
+        }
+
         $data = $this->readInputToArray();
-        
         $person = new Mock_Person();
         $person->set( $data );
         $person->validate();

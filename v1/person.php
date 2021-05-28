@@ -18,6 +18,10 @@ echo( $response );
 
 function getIdFromUriIfSet() : ?string {
 
+    if( !isset($_SERVER['PATH_INFO']) ) {
+        return null;
+    }
+
     $uri = parse_url( $_SERVER['PATH_INFO'], PHP_URL_PATH );
 
     $uriParts = explode('/', $uri);
