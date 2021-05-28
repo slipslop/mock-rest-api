@@ -18,14 +18,14 @@ echo( $response );
 
 function getIdFromUriIfSet() : ?string {
 
-    $uri = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_PATH );
+    $uri = parse_url( $_SERVER['PATH_INFO'], PHP_URL_PATH );
 
     $uriParts = explode('/', $uri);
     
     $id = null;
     
-    if( isset($uriParts[3]) ) {
-        $id = $uriParts[3];
+    if( isset($uriParts[1]) ) {
+        $id = $uriParts[1];
     }
     // if( isset($uriParts[7]) ) {
     //     $id = $uriParts[7];
