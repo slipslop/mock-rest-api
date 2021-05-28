@@ -16,11 +16,15 @@ class Mock_Person extends Resource {
         'email'     => [
             'required'  => true,
             'type'      => 'string',
-        ], 
+        ],
         'created'   => [
             'required'  => true,
             'type'      => 'datetime',
         ], 
+        'phone'     => [
+            'required'  => false,
+            'type'      => 'string',
+        ],
         'updated'   => [
             'required'  => false,
             'type'      => 'datetime',

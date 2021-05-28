@@ -92,13 +92,11 @@ class PersonHandler implements Handler {
         }
 
         $person = Mock_Person::getOne($this->id);
-       
         if( !$person ) {
            return $this->personNotFoundResponse();
         }
 
         $putParams =  $this->readInputToArray();
-       
         if( !$putParams ){
             http_response_code(400);
             return [
@@ -108,7 +106,6 @@ class PersonHandler implements Handler {
         }
 
         $person = $person->updateData($putParams);
-
         if( isset($person->error) ) {
             http_response_code(422);
             return [
@@ -117,7 +114,10 @@ class PersonHandler implements Handler {
             ];
         }
 
-        return ['person' => $person];
+        return [
+            'message'   => 'Successfully updated',
+            'person'    => $person
+        ];
 
     }
 
